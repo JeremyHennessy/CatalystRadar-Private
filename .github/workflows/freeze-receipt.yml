@@ -1,0 +1,12 @@
+name: Record prospective paper freeze receipt
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  receipt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Record head existence only
+        run: echo 'This workflow anchors its head commit. It does not validate signals or create fills.'
