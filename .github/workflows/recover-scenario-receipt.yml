@@ -1,0 +1,54 @@
+name: Recover existing scenario receipt only
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: single-private-price-consumer
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      actions: read
+    env:
+      EXPECTED_PUBLIC_CODE_SHA: 9f2e6f2396b379e47887cc785bd94f0ef351b7ec
+      EXPECTED_RECEIPT_WORKFLOW_BLOB_SHA: 2cb9e886b5b496dbffe8bc84e76a8a1606b26751
+      EXISTING_RECEIPT_RUN_ID: '43632065122'
+      FROZEN_PLAN_COMMIT: 1598a1fc4a179a0a8fee4eccbd82041cb9d9fbe7
+      FROZEN_PLAN_SHA256: b7d125d608e246ed472b59fa3603fa2a843ddad5b2e2d089f73913dfa7a05f34
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: JeremyHennessy/CatalystRadar
+          ref: 9f2e6f2396b379e47887cc785bd94f0ef351b7ec
+          path: .collector
+          persist-credentials: false
+      - name: Verify original existing server receipt
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import sys,json
+          sys.path.insert(0,'.collector/backend')
+          from recover_scenario_receipt import recover
+          try: print(json.dumps(recover()))
+          except Exception:
+              print('Existing receipt recovery blocked. No new dispatch, plan or provider call.');sys.exit(1)
+          PY
+      - name: Retain existing verified receipt only
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- data/scenario-receipts/b7d125d608e246ed472b59fa3603fa2a843ddad5b2e2d089f73913dfa7a05f34.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Recover original server receipt without changing scenario'
+          python3 .collector/backend/collect.py --verify-privacy
+          git push origin HEAD:main
