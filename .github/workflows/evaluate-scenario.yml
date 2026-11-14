@@ -1,0 +1,53 @@
+name: Evaluate separate conditional mechanical illustration
+on:
+  schedule:
+    - cron: '20 12,14 17-21 11 *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: single-private-price-consumer
+  cancel-in-progress: false
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      actions: read
+    env:
+      EXPECTED_PUBLIC_CODE_SHA: af2226c04fce5d26e4c6b2204d30f9871c29a77d
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: JeremyHennessy/CatalystRadar
+          ref: af2226c04fce5d26e4c6b2204d30f9871c29a77d
+          path: .collector
+          persist-credentials: false
+      - name: Evaluate retained evidence privately only
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import sys,json
+          sys.path.insert(0,'.collector/backend')
+          from evaluate_private_scenario import run
+          try: print(json.dumps(run()))
+          except Exception:
+              print('Conditional evaluation blocked. No primary-book change or provider call.');sys.exit(1)
+          PY
+      - name: Retain conditional reports privately
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          compgen -G 'data/scenario-evaluations/*.json' > /dev/null || exit 0
+          git add -- data/scenario-evaluations/*.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Append separate conditional raw-close illustration'
+          python3 .collector/backend/collect.py --verify-privacy
+          git push origin HEAD:main
