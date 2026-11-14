@@ -1,0 +1,76 @@
+{
+  "observed_utc": "2026-11-14T18:48:41.972762+00:00",
+  "saved_snapshots": 11,
+  "symbols": [
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "COHR",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "HRB",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "CINF",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "TXMD",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "RVTY",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "EMR",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "GT",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "KEY",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "WOR",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "XRX",
+      "rows": 100
+    },
+    {
+      "saved": true,
+      "already_present": false,
+      "symbol": "SPY",
+      "rows": 100
+    }
+  ],
+  "orders": 0,
+  "forecasts": [],
+  "price_basis": "RAW_DAILY_NOT_AUCTION_OR_TOTAL_RETURN",
+  "scope": "PRIVATE_PERSONAL_RESEARCH"
+}
