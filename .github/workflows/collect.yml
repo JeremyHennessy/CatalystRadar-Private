@@ -20,18 +20,23 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: main
-      - name: Synthetic checks without provider access
-        run: python3 -m unittest discover -s backend -p 'test_*.py'
-      - name: Private collection
+      - name: Load reviewed public collector
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: JeremyHennessy/CatalystRadar
+          ref: 381ae7463acd97329de544c8c70626a90d556f58
+          path: .collector
+          persist-credentials: false
+      - name: Private collection only
         env:
           ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: python3 backend/collect.py
+        run: python3 .collector/backend/collect.py
       - name: Reverify privacy and retain private snapshots
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          python3 backend/collect.py --verify-privacy
+          python3 .collector/backend/collect.py --verify-privacy
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- data/prices/*.json data/latest-collection.json
