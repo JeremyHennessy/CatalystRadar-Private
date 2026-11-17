@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: JeremyHennessy/CatalystRadar
-          ref: 381ae7463acd97329de544c8c70626a90d556f58
+          ref: 2cc42023deddf3ad275848d6631e59b21ca80680
           path: .collector
           persist-credentials: false
       - name: Private collection only
