@@ -1,7 +1,5 @@
 name: Evaluate separate conditional mechanical illustration
 on:
-  schedule:
-    - cron: '20 12,14 17-21 11 *'
   workflow_dispatch:
 permissions:
   contents: read
